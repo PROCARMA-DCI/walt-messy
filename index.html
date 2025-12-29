@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Spitzer Service Advisor Daily Checklist</title>
+
+        <style>
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                background: #aaa;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            /* ====== PAGE CORE ====== */
+            .page {
+                width: 210mm;
+                height: 297mm;
+                background: white;
+                margin: 10mm auto;
+                page-break-after: always;
+                position: relative;
+                overflow: hidden;
+            }
+
+            /* ====== COVER PAGE ====== */
+            .cover-left {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 70mm;
+                height: 297mm;
+                background-image: url("/mnt/data/927f315f-8065-4c09-aba4-dcfaba2333ec.png");
+                background-size: cover;
+                background-position: center;
+            }
+
+            .cover-main {
+                position: absolute;
+                left: 70mm;
+                top: 0;
+                width: 140mm;
+                height: 297mm;
+                background: #fff;
+            }
+
+            /* ====== INTERIOR PAGES ====== */
+            .header {
+                height: 22mm;
+                background: #00a6e2;
+                color: white;
+                padding: 6mm 14mm;
+                box-sizing: border-box;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .content {
+                padding: 14mm;
+                box-sizing: border-box;
+            }
+
+            .section {
+                margin-bottom: 10mm;
+            }
+
+            .section h2 {
+                font-size: 15px;
+                border-bottom: 2px solid #00a6e2;
+                margin-bottom: 4mm;
+            }
+
+            .section ul {
+                padding-left: 18px;
+                margin: 0;
+            }
+
+            .section li {
+                font-size: 12.5px;
+                margin-bottom: 4mm;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- ================= PAGE 1 – COVER ================= -->
+        <div class="page">
+            <div class="cover-left"></div>
+            <div class="cover-main"></div>
+        </div>
+
+        <!-- ================= PAGE 2 ================= -->
+        <div class="page">
+            <div class="header">Daily Preparation & Customer Greeting</div>
+            <div class="content">
+                <div class="section">
+                    <h2>Daily Preparation for Scheduled Appointments</h2>
+                    <ul>
+                        <li>Use Pre-Writes from CDK and SmartVMA.</li>
+                        <li>
+                            Check for open recalls, special coverages, or
+                            campaigns.
+                        </li>
+                        <li>Review Manufacturer & Spitzer Rewards.</li>
+                        <li>Review declined or recurring services.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Customer Greeting & Engagement</h2>
+                    <ul>
+                        <li>Be prompt, enthusiastic, and professional.</li>
+                        <li>Smile, greet the customer by name.</li>
+                        <li>Meet the customer at their vehicle.</li>
+                        <li>
+                            Review recalls, promotions, and declined services.
+                        </li>
+                        <li>Request permission for MPVI and walk-around.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 3 ================= -->
+        <div class="page">
+            <div class="header">Repair Order & MPVI</div>
+            <div class="content">
+                <div class="section">
+                    <h2>Identify Customer’s Primary Concern</h2>
+                    <ul>
+                        <li>When does it happen?</li>
+                        <li>How often does it occur?</li>
+                        <li>What does it sound like?</li>
+                        <li>High speed or low speed?</li>
+                        <li>Hot or cold engine?</li>
+                        <li>Constant or intermittent?</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>MPVI Expectations</h2>
+                    <ul>
+                        <li>Explain Green, Yellow, Red (RIM Method).</li>
+                        <li>Customer receives a video inspection.</li>
+                        <li>Save MPVI results in system.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 4 ================= -->
+        <div class="page">
+            <div class="header">SmartVMA & Warranties</div>
+            <div class="content">
+                <div class="section">
+                    <h2>SmartVMA Menu</h2>
+                    <ul>
+                        <li>Present maintenance or diagnosis plan.</li>
+                        <li>Explain 60,000 mile service if due.</li>
+                        <li>Confirm customer approval.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Warranties & Protection Plans</h2>
+                    <ul>
+                        <li>Review remaining factory warranty.</li>
+                        <li>Explain Spitzer Shield LPP.</li>
+                        <li>Provide LPP delivery sheet.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 5 ================= -->
+        <div class="page">
+            <div class="header">Customer Communication & Delivery</div>
+            <div class="content">
+                <div class="section">
+                    <h2>Status & Updates</h2>
+                    <ul>
+                        <li>Confirm waiter or non-waiter.</li>
+                        <li>Update at 10:00 AM and 2:00 PM.</li>
+                        <li>Present MPVI at 25% of repair time.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Active Delivery</h2>
+                    <ul>
+                        <li>Review repair order.</li>
+                        <li>Explain MPVI results.</li>
+                        <li>Review warranties & rebates.</li>
+                        <li>Escort customer to vehicle.</li>
+                        <li>Thank customer and request survey.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
