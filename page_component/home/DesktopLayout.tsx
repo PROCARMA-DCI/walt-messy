@@ -1,5 +1,5 @@
-import StripePaymentComponent from "@/components/StripePaymentComponent";
-import React, { useEffect } from "react";
+import StripePayment from "@/components/StripePayment/StripePayment";
+import React, { useEffect, useState } from "react";
 
 export const DesktopLayout = ({
   setSelectedTab,
@@ -10,25 +10,23 @@ export const DesktopLayout = ({
   selectedTab: string;
   products: any[];
 }) => {
+  const [selectedProduct, setSelectedProduct] = useState<Record<string, any>>();
   const [services, setServices] = React.useState<any[]>([]);
 
   useEffect(() => {
     const selectedProduct = products.find(
       (product) => product.product_id === selectedTab
     );
-
     // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedProduct(selectedProduct);
     setServices(selectedProduct?.Services ?? []);
   }, [selectedTab]);
 
-  const totalAmount = products.reduce((sum, product) => {
-    return (
-      sum + Number(product.product_amount) + Number(product.product_saving)
-    );
-  }, 0);
-  const discountAmount = products.reduce((sum, product) => {
-    return sum + Number(product.product_amount);
-  }, 0);
+  const totalAmount =
+    Number(selectedProduct?.product_amount ?? 0) +
+    Number(selectedProduct?.product_saving ?? 0);
+
+  const discountAmount = Number(selectedProduct?.product_amount ?? 0);
 
   return (
     <div
@@ -174,14 +172,20 @@ export const DesktopLayout = ({
             ${discountAmount}.00
           </p>
         </div>
-        <div
+        {selectedProduct && <StripePayment selectedProduct={selectedProduct} />}
+        {/* <div
           className="w-full bg-[#1f25cb] h-[47.44px] rounded-[10.414px]
   cursor-pointer hover:bg-[#1a20a8] transition-colors shadow-lg
   flex items-center justify-center mt-4"
         >
           <p className="font-bold text-[16.199px] text-white">Purchase Plan</p>
-        </div>
-        <StripePaymentComponent products={products} />
+        </div> */}
+        {/* {selectedProduct && (
+          <StripePaymentComponent
+            products={products}
+            selectedProduct={selectedProduct}
+          />
+        )} */}
       </div>
 
       {/* Disclaimer */}

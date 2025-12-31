@@ -429,12 +429,13 @@ const CheckoutForm = ({
 // Stripe Payment Component Props Interface
 interface StripePaymentComponentProps {
   products: any[];
+  selectedProduct: Record<string, any>;
   onPaymentSuccess?: (productIds: string[]) => void;
   onPaymentError?: (error: string) => void;
 }
-
 // Main Stripe Payment Component
 function StripePaymentComponent({
+  selectedProduct,
   products,
   onPaymentSuccess,
   onPaymentError,
@@ -491,83 +492,85 @@ function StripePaymentComponent({
 
     // Then create the payment intent with product information
     const createPaymentIntent = async (apiUrl: string | null) => {
+      console.log("ApiUrl", apiUrl);
       if (!apiUrl) {
         setLoading(false);
         return;
       }
-
+      console.log({ selectedProduct });
       try {
         // Convert products to the format expected by the backend
         const totalAmount = calculateTotalAmount();
+        console.log({ totalAmount });
+        // console.log({ selectedProduct });
         const amountInCents = Math.round(totalAmount * 100); // Convert to cents for Stripe
-
         // Prepare product data for the backend
-        const items = products.map((product) => {
-          // For VSC products, use the price directly
-          if (product.productType === "vsc") {
-            const price = parseFloat(product.price || "0");
-            const amount = isNaN(price) ? 0 : Math.round(price * 100);
+        // const items = products.map((product) => {
+        // For VSC products, use the price directly
 
-            return {
-              id: product.productId,
-              title: product.productTitle,
-              type: product.productType,
-              amount: amount,
-              // Include all VSC details
-              vscDetails: {
-                plantype: product.details.plantype,
-                scPlanDescription: product.details.scPlanDescription,
-                uniqueId: product.details.uniqueId,
-                pdf_url: product.details.pdf_url,
-                plansdetail: product.details.plansdetail,
-                name: product.details.Name,
-              },
-            };
-          } else {
-            // For other products, calculate with discount
-            return {
-              id: product.productId,
-              title: product.productTitle,
-              type: product.productType,
-              amount: Math.round(
-                (parseFloat(product.details.product_price) -
-                  (parseFloat(product.details.product_price) *
-                    parseFloat(product.details.product_discount)) /
-                    100) *
-                  100
-              ),
-            };
-          }
-        });
+        if (selectedProduct.product_through == 1) {
+          const price = parseFloat(selectedProduct.price || "0");
+          // const amount = isNaN(price) ? 0 : Math.round(price * 100);
+
+          // return {
+          //   id: product.productId,
+          //   title: product.productTitle,
+          //   type: product.productType,
+          //   amount: amount,
+          //   // Include all VSC details
+          //   vscDetails: {
+          //     plantype: product.details.plantype,
+          //     scPlanDescription: product.details.scPlanDescription,
+          //     uniqueId: product.details.uniqueId,
+          //     pdf_url: product.details.pdf_url,
+          //     plansdetail: product.details.plansdetail,
+          //     name: product.details.Name,
+          //   },
+          // };
+        } else {
+          // For other products, calculate with discount
+          return {
+            id: selectedProduct.productId,
+            // title: product.productTitle,
+            // type: product.productType,
+            // amount: Math.round(
+            //   (parseFloat(product.details.product_price) -
+            //     (parseFloat(product.details.product_price) *
+            //       parseFloat(product.details.product_discount)) /
+            //       100) *
+            //     100
+            // ),
+          };
+        }
+        // });
 
         console.log(
           "Sending payment intent with amount:",
           amountInCents,
           "cents"
         );
-        console.log("Product items:", items);
 
-        const response = await fetch(`${apiUrl}/create-payment-intent`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: amountInCents,
-            items: items,
-            metadata: {
-              products: products.map((p) => p.productId).join(","),
-            },
-          }),
-        });
+        // const response = await fetch(`${apiUrl}/create-payment-intent`, {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     amount: amountInCents,
+        //     items: [selectedProduct],
+        //     metadata: {
+        //       products: products.map((p) => p.productId).join(","),
+        //     },
+        //   }),
+        // });
 
-        if (!response.ok) {
-          throw new Error(
-            `Payment server responded with status: ${response.status}`
-          );
-        }
+        // if (!response.ok) {
+        //   throw new Error(
+        //     `Payment server responded with status: ${response.status}`
+        //   );
+        // }
 
-        const { clientSecret } = await response.json();
+        // const { clientSecret } = await response.json();
 
         if (!clientSecret) {
           throw new Error("No client secret received from payment server");
@@ -576,7 +579,7 @@ function StripePaymentComponent({
         console.log("Received client secret:", clientSecret);
         setClientSecret(clientSecret);
       } catch (error: any) {
-        console.error("Error creating payment intent:", error);
+        console.log("Error creating payment intent:", error);
         toast.error("Payment Error", {
           description: "Could not initialize payment. Please try again later.",
         });
@@ -589,8 +592,8 @@ function StripePaymentComponent({
     };
 
     const initialize = async () => {
-      const apiUrl = await loadStripeConfig();
-      await createPaymentIntent(apiUrl);
+      const apiUrl: any = await loadStripeConfig();
+      // await createPaymentIntent(apiUrl);
     };
 
     if (products && products.length > 0) {
