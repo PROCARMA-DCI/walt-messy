@@ -18,8 +18,13 @@ export default function Home() {
   }, [products, selectedTab]);
 
   return (
-    <div className="min-h-screen w-full md:flex md:items-center md:justify-center bg-gray-100 md:overflow-hidden">
+    <div className="min-h-screen w-full md:flex md:items-center mx-auto md:justify-center bg-gray-100 md:overflow-hidden">
       {/* Desktop Layout (hidden on mobile) */}
+      {/* <MaintenanceLayout
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+        products={products}
+      /> */}
       <DesktopLayout
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
