@@ -58,11 +58,15 @@ const CheckoutCard = ({
       stripe_price_id: selectedProduct.stripe_price_id,
     };
 
-    await fetch(`${API_URL}/payments/confirm`, {
+    const res = await fetch(`${API_URL}/payments/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+    if (res) {
+      const data = await res.json();
+      console.log("confirm", data);
+    }
   };
 
   const CheckoutForm = ({

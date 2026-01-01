@@ -1,4 +1,7 @@
+import { ArraySkeleton } from "@/components/loader/SkeletonLoader";
 import StripePayment from "@/components/StripePayment/StripePayment";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAppContext } from "@/context/AppProvider";
 import React, { useEffect, useState } from "react";
 
 export const DesktopLayout = ({
@@ -10,6 +13,7 @@ export const DesktopLayout = ({
   selectedTab: string;
   products: any[];
 }) => {
+  const { loading } = useAppContext();
   const [selectedProduct, setSelectedProduct] = useState<Record<string, any>>();
   const [services, setServices] = React.useState<any[]>([]);
 
@@ -23,10 +27,12 @@ export const DesktopLayout = ({
   }, [selectedTab]);
 
   const totalAmount =
-    Number(selectedProduct?.product_amount ?? 0) +
-    Number(selectedProduct?.product_saving ?? 0);
+    selectedProduct?.payment_type !== 2 && selectedProduct?.payment_type !== 3
+      ? Number(selectedProduct?.list_price ?? 0)
+      : (selectedProduct?.monthly_price ?? 0) +
+        Number(selectedProduct?.product_saving ?? 0);
 
-  const discountAmount = Number(selectedProduct?.product_amount ?? 0);
+  const discountAmount = Number(selectedProduct?.list_price ?? 0);
 
   return (
     <div
@@ -83,7 +89,7 @@ export const DesktopLayout = ({
       </p>
 
       {/* WM Logo */}
-      <div className="absolute inset-[7.16%_59.73%_55.38%_5.93%]">
+      <div className="absolute inset-[7.16%_59.73%_55.38%_5.93%] size-[450.314px]">
         <img
           alt="WM Logo"
           className="block max-w-none size-full"
@@ -95,82 +101,105 @@ export const DesktopLayout = ({
       <div className="absolute bg-white flex flex-col flex-wrap gap-[20px] items-start left-[737.58px] pb-[20px] pt-[17.61px] px-[17.61px] rounded-[23.142px] shadow-[0px_2.935px_4.402px_-0.734px_rgba(0,0,0,0.1),0px_1.467px_2.935px_-1.467px_rgba(0,0,0,0.1)] top-[253.07px] w-[602.837px]">
         {/* Gas/Diesel Toggle */}
         <div className="bg-[#f3f4f6] flex flex-wrap gap-[5.87px] items-center border border-input rounded-[7.337px] w-full p-[2.935px]">
-          {products.map((product) => {
-            const isActive = selectedTab === product.product_id;
+          {loading ? (
+            <ArraySkeleton className="" />
+          ) : (
+            products.map((product) => {
+              const isActive = selectedTab === product.product_id;
 
-            return (
-              <>
-                <button
-                  key={product.product_id}
-                  onClick={() => setSelectedTab(product.product_id)}
-                  className={`relative rounded-[5.87px] transition-all h-[45px] min-w-[120px] flex-1 ${
-                    isActive
-                      ? "bg-white shadow-[0px_0.734px_2.201px_0px_rgba(0,0,0,0.1),0px_0.734px_1.467px_-0.734px_rgba(0,0,0,0.1)]"
-                      : "bg-transparent hover:bg-white/50"
-                  }`}
-                >
-                  <p
-                    className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+              return (
+                <>
+                  <button
+                    key={product.product_id}
+                    onClick={() => setSelectedTab(product.product_id)}
+                    className={`relative rounded-[5.87px] transition-all h-[45px] min-w-[120px] flex-1 ${
+                      isActive
+                        ? "bg-white shadow-[0px_0.734px_2.201px_0px_rgba(0,0,0,0.1),0px_0.734px_1.467px_-0.734px_rgba(0,0,0,0.1)]"
+                        : "bg-transparent hover:bg-white/50"
+                    }`}
+                  >
+                    <p
+                      className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
   text-[11.74px] font-semibold text-center leading-tight
   break-words w-full px-2 ${isActive ? "text-[#101828]" : "text-[#4a5565]"}`}
-                  >
-                    {product.product_title}
-                  </p>
-                </button>
-              </>
-            );
-          })}
+                    >
+                      {product.product_title}
+                    </p>
+                  </button>
+                </>
+              );
+            })
+          )}
         </div>
 
         {/* Services Grid */}
-        <div className="w-full grid grid-cols-3 gap-[8.805px]">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className="border border-[#e5e7eb] flex flex-col gap-[11.571px]
+        {loading ? (
+          <ArraySkeleton className="size-[100.544px]  " />
+        ) : (
+          <div className="w-full grid grid-cols-3 gap-[8.805px]">
+            {services.map((service, index) => (
+              <div
+                key={index}
+                className="border border-[#e5e7eb] flex flex-col gap-[11.571px]
       items-center justify-center p-[5.785px] rounded-[11.571px]
       transition-all duration-200 hover:shadow-lg hover:scale-105
       hover:border-gray-300 cursor-pointer"
-            >
-              <div className="size-[100.544px]">
-                <img
-                  alt={service.CouponTitle}
-                  className="object-cover size-full"
-                  src={service.ServiceImg}
-                />
+              >
+                <div className="size-[100.544px]">
+                  <img
+                    alt={service.CouponTitle}
+                    className="object-cover size-full"
+                    src={service.ServiceImg}
+                  />
+                </div>
+
+                <p className="font-bold text-[#101828] text-[10.885px] text-center leading-[18.513px] whitespace-pre-wrap">
+                  {service.CouponTitle}
+                  <br />
+                  {service.subtitle}
+                </p>
               </div>
-
-              <p className="font-bold text-[#101828] text-[10.885px] text-center leading-[18.513px] whitespace-pre-wrap">
-                {service.CouponTitle}
-                <br />
-                {service.subtitle}
-              </p>
-            </div>
-          ))}
-        </div>
-
+            ))}
+          </div>
+        )}
         {/* Normal Price */}
         {totalAmount !== discountAmount && (
           <div className="flex items-center justify-between w-full">
-            <p className="font-normal text-[14px] text-[#4a5565]">
-              Normal Price:
-            </p>
-            <p className="font-normal text-[28px] text-[#aaafb6] line-through decoration-red-500 decoration-2">
-              ${totalAmount}.00
-            </p>
+            {loading ? (
+              <Skeleton className="w-[100px] h-[20px]" />
+            ) : (
+              <p className="font-normal text-[14px] text-[#4a5565]">
+                Normal Price:
+              </p>
+            )}
+            {loading ? (
+              <Skeleton className="w-[100px] h-[20px]" />
+            ) : (
+              <p className="font-normal text-[28px] text-[#aaafb6] line-through decoration-red-500 decoration-2">
+                ${totalAmount}.00
+              </p>
+            )}
           </div>
         )}
 
         {/* Holiday Savings */}
         <div className="flex items-center justify-between w-full mb-6">
-          <p className="font-normal text-[14px] text-[#4a5565]">
-            {totalAmount !== discountAmount
-              ? "Holiday Savings:"
-              : "Total Price:"}
-          </p>
-          <p className="font-bold text-[28px] text-[#101828]">
-            ${discountAmount}.00
-          </p>
+          {loading ? (
+            <Skeleton className="w-[100px] h-[20px]" />
+          ) : (
+            <p className="font-normal text-[14px] text-[#4a5565]">
+              {totalAmount !== discountAmount
+                ? "Holiday Savings:"
+                : "Normal Price:"}
+            </p>
+          )}
+          {loading ? (
+            <Skeleton className="w-[100px] h-[20px]" />
+          ) : (
+            <p className="font-bold text-[28px] text-[#101828]">
+              ${discountAmount}.00
+            </p>
+          )}
         </div>
         {selectedProduct && <StripePayment selectedProduct={selectedProduct} />}
         {/* <div
