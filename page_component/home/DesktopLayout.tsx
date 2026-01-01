@@ -27,10 +27,8 @@ export const DesktopLayout = ({
   }, [selectedTab]);
 
   const totalAmount =
-    selectedProduct?.payment_type !== 2 && selectedProduct?.payment_type !== 3
-      ? Number(selectedProduct?.list_price ?? 0)
-      : (selectedProduct?.monthly_price ?? 0) +
-        Number(selectedProduct?.product_saving ?? 0);
+    Number(selectedProduct?.list_price ?? 0) +
+    Number(selectedProduct?.product_saving ?? 0);
 
   const discountAmount = Number(selectedProduct?.list_price ?? 0);
 
