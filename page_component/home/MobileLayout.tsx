@@ -1,16 +1,36 @@
-import React from "react";
-
+import { ArraySkeleton } from "@/components/loader/SkeletonLoader";
+import StripePayment from "@/components/StripePayment/StripePayment";
+import { useAppContext } from "@/context/AppProvider";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 export const MobileLayout = ({
   setSelectedTab,
   selectedTab,
   products,
-  prices,
 }: {
-  setSelectedTab: React.Dispatch<React.SetStateAction<"standard" | "diesel">>;
+  setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
   selectedTab: string;
   products: any[];
-  prices: any;
 }) => {
+  const { loading } = useAppContext();
+  const [selectedProduct, setSelectedProduct] = useState<Record<string, any>>();
+  const [services, setServices] = React.useState<any[]>([]);
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);
+
+  useEffect(() => {
+    const selectedProduct = products.find(
+      (product) => product.product_id === selectedTab
+    );
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedProduct(selectedProduct);
+    setServices(selectedProduct?.Services ?? []);
+  }, [selectedTab]);
+
+  const totalAmount =
+    Number(selectedProduct?.list_price ?? 0) +
+    Number(selectedProduct?.product_saving ?? 0);
+
+  const discountAmount = Number(selectedProduct?.list_price ?? 0);
   return (
     <div
       className="md:hidden relative w-full mx-auto bg-white pb-20 flex justify-center items-center "
@@ -93,90 +113,119 @@ export const MobileLayout = ({
       {/* Main Card Container */}
       <div className="absolute top-[260.78px] bg-white flex flex-col gap-[22px] w-full pb-[15px] pt-[15.22px] px-[15.22px] max-w-[500px] rounded-[20px] shadow-[0px_2.537px_3.805px_-0.634px_rgba(0,0,0,0.1),0px_1.268px_2.537px_-1.268px_rgba(0,0,0,0.1)] ">
         {/* Gas/Diesel Toggle */}
-        <div className="bg-[#f3f4f6] flex gap-[5.073px] h-[30.438px] pb-0 pt-[2.537px] px-[2.537px] rounded-[6.341px] w-full">
-          <button
-            onClick={() => setSelectedTab("standard")}
-            className={`flex-1 h-[25.365px] rounded-[5.073px] transition-all ${
-              selectedTab === "standard"
-                ? "bg-white shadow-[0px_0.634px_1.902px_0px_rgba(0,0,0,0.1),0px_0.634px_1.268px_-0.634px_rgba(0,0,0,0.1)]"
-                : "bg-transparent"
-            }`}
-          >
-            <p
-              className={`font-bold text-[10.146px] text-center leading-[15.219px] ${
-                selectedTab === "standard" ? "text-[#101828]" : "text-[#4a5565]"
-              }`}
-            >
-              Standard Gas
-            </p>
-          </button>
-          <button
-            onClick={() => setSelectedTab("diesel")}
-            className={`flex-1 h-[25.365px] rounded-[5.073px] transition-all ${
-              selectedTab === "diesel"
-                ? "bg-white shadow-[0px_0.634px_1.902px_0px_rgba(0,0,0,0.1),0px_0.634px_1.268px_-0.634px_rgba(0,0,0,0.1)]"
-                : "bg-transparent"
-            }`}
-          >
-            <p
-              className={`font-normal text-[10.146px] text-center leading-[15.219px] ${
-                selectedTab === "diesel" ? "text-[#101828]" : "text-[#4a5565]"
-              }`}
-            >
-              Diesel
-            </p>
-          </button>
-        </div>
+        {!openPaymentModal && (
+          <>
+            <div className="bg-[#f3f4f6] flex gap-[5.073px] h-[30.438px] p-[2.537px] rounded-[6.341px] w-full relative">
+              {loading ? (
+                <ArraySkeleton />
+              ) : (
+                products.map((product) => {
+                  const isActive = selectedTab === product.product_id;
 
-        {/* Services Grid - 2 columns for mobile */}
-        <div className="grid grid-cols-2 gap-[7.61px] w-full">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="border border-[#e5e7eb] border-solid flex flex-col items-center p-[5px] rounded-[10px]  transition-all duration-200 active:scale-95"
-            >
-              <div className="relative size-[86.9px] mt-2">
-                <img
-                  alt={product.name}
-                  className="absolute inset-0 max-w-none object-cover size-full"
-                  src={product.image}
-                />
+                  return (
+                    <button
+                      key={product.product_id}
+                      onClick={() => setSelectedTab(product.product_id)}
+                      className="relative flex-1 h-[25.365px] rounded-[5.87px]"
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="absolute inset-0 rounded-[5.87px] bg-white
+                shadow-[0px_0.734px_2.201px_rgba(0,0,0,0.1)]"
+                          transition={{
+                            type: "spring",
+                            stiffness: 450,
+                            damping: 30,
+                          }}
+                        />
+                      )}
+
+                      <span
+                        className={`relative z-10 text-[11.74px] font-semibold block text-center
+              ${isActive ? "text-[#101828]" : "text-[#4a5565]"}`}
+                      >
+                        {product.product_title}
+                      </span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Services Grid */}
+
+            {loading ? (
+              <ArraySkeleton className="size-[86.9px]" />
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  className="w-full grid grid-cols-3 gap-[8.805px]"
+                >
+                  {services.map((service, index) => (
+                    <motion.div
+                      key={service.CouponTitle}
+                      whileTap={{ scale: 0.96 }}
+                      whileHover={{ scale: 1.04 }}
+                      className="border border-[#e5e7eb] flex flex-col items-center
+          p-[5px] rounded-[10px]"
+                    >
+                      <div className="size-[86.9px]">
+                        <img
+                          src={service.ServiceImg}
+                          alt={service.CouponTitle}
+                          className="object-cover size-full"
+                        />
+                      </div>
+
+                      <p className="font-bold text-[#101828] text-[12px] text-center">
+                        {service.CouponTitle}
+                        <br />
+                        {service.subtitle}
+                      </p>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            )}
+            {/* Normal Price */}
+            {totalAmount !== discountAmount && (
+              <div className="flex items-center justify-between w-full">
+                <p className="font-normal text-[10.146px] text-[#4a5565] leading-[15.219px]">
+                  Normal Price:
+                </p>
+                <p className="font-normal text-[20.292px] text-[#aaafb6] leading-[15.219px] line-through decoration-red-500 decoration-2">
+                  ${totalAmount}.00
+                </p>
               </div>
-              <p className="font-bold text-[12px] leading-[16px] text-[#101828] text-center w-[141px] mt-auto whitespace-pre-wrap">
-                {product.name}
-                <br />
-                {product.subtitle}
+            )}
+            {/* Holiday Savings */}
+            <div className="flex items-center justify-between w-full">
+              <p className="font-normal text-[10.146px] text-[#4a5565] leading-[15.219px]">
+                {totalAmount !== discountAmount
+                  ? "Holiday Savings:"
+                  : "Normal Price:"}
+              </p>
+              <p className="font-bold text-[20.292px] text-[#101828] leading-[15.219px]">
+                ${discountAmount}.00
               </p>
             </div>
-          ))}
-        </div>
-
-        {/* Normal Price */}
-        <div className="flex items-center justify-between w-full">
-          <p className="font-normal text-[10.146px] text-[#4a5565] leading-[15.219px]">
-            Normal Price:
-          </p>
-          <p className="font-normal text-[20.292px] text-[#aaafb6] leading-[15.219px] line-through decoration-red-500 decoration-2">
-            {prices[selectedTab].normal}
-          </p>
-        </div>
-
-        {/* Holiday Savings */}
-        <div className="flex items-center justify-between w-full">
-          <p className="font-normal text-[10.146px] text-[#4a5565] leading-[15.219px]">
-            Holiday Savings:
-          </p>
-          <p className="font-bold text-[20.292px] text-[#101828] leading-[15.219px]">
-            {prices[selectedTab].holiday}
-          </p>
-        </div>
-
+          </>
+        )}
         {/* Purchase Plan Button - Inside card for mobile */}
-        <button className="bg-[#1f25cb] h-[41px] w-full rounded-[9px] hover:bg-[#1a20a8] transition-colors">
-          <p className="font-bold text-[14px] text-center text-white leading-[28px]">
-            Purchase Plan
-          </p>
-        </button>
+
+        {selectedProduct && (
+          <StripePayment
+            selectedProduct={selectedProduct}
+            openPaymentModal={openPaymentModal}
+            setOpenPaymentModal={setOpenPaymentModal}
+          />
+        )}
       </div>
 
       {/* Disclaimer */}

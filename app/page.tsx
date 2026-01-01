@@ -2,6 +2,7 @@
 
 import { useAppContext } from "@/context/AppProvider";
 import { DesktopLayout } from "@/page_component/home/DesktopLayout";
+import { MobileLayout } from "@/page_component/home/MobileLayout";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -26,12 +27,11 @@ export default function Home() {
       />
 
       {/* Mobile Layout (shown on mobile only) */}
-      {/* <MobileLayout
+      <MobileLayout
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
-        products={displayedProducts}
-        prices={prices}
-      /> */}
+        products={products}
+      />
     </div>
   );
 }
