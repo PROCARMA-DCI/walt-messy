@@ -2,6 +2,7 @@ import { ArraySkeleton } from "@/components/loader/SkeletonLoader";
 import StripePayment from "@/components/StripePayment/StripePayment";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppContext } from "@/context/AppProvider";
+import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
 export const DesktopLayout = ({
@@ -114,16 +115,24 @@ export const DesktopLayout = ({
                       <button
                         key={product.product_id}
                         onClick={() => setSelectedTab(product.product_id)}
-                        className={`relative rounded-[5.87px] transition-all h-[45px] min-w-[120px] flex-1 ${
-                          isActive
-                            ? "bg-white shadow-[0px_0.734px_2.201px_0px_rgba(0,0,0,0.1),0px_0.734px_1.467px_-0.734px_rgba(0,0,0,0.1)]"
-                            : "bg-transparent hover:bg-white/50"
-                        }`}
+                        className="relative h-[45px] min-w-[120px] flex-1"
                       >
+                        {isActive && (
+                          <motion.div
+                            layoutId="activeTab"
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 30,
+                            }}
+                            className="absolute inset-0 rounded-[5.87px]
+                                      bg-white shadow-[0px_0.734px_2.201px_rgba(0,0,0,0.1)]"
+                          />
+                        )}
+
                         <p
-                          className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-  text-[11.74px] font-semibold text-center leading-tight
-  break-words w-full px-2 ${isActive ? "text-[#101828]" : "text-[#4a5565]"}`}
+                          className={`relative z-10 text-[11.74px] font-semibold text-center
+      ${isActive ? "text-[#101828]" : "text-[#4a5565]"}`}
                         >
                           {product.product_title}
                         </p>
@@ -136,33 +145,42 @@ export const DesktopLayout = ({
 
             {/* Services Grid */}
             {loading ? (
-              <ArraySkeleton className="size-[100.544px]  " />
+              <ArraySkeleton className="size-[100.544px]" />
             ) : (
-              <div className="w-full grid grid-cols-3 gap-[8.805px]">
-                {services.map((service, index) => (
-                  <div
-                    key={index}
-                    className="border border-[#e5e7eb] flex flex-col gap-[11.571px]
-      items-center justify-center p-[5.785px] rounded-[11.571px]
-      transition-all duration-200 hover:shadow-lg hover:scale-105
-      hover:border-gray-300 cursor-pointer"
-                  >
-                    <div className="size-[100.544px]">
-                      <img
-                        alt={service.CouponTitle}
-                        className="object-cover size-full"
-                        src={service.ServiceImg}
-                      />
-                    </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedTab}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  className="w-full grid grid-cols-3 gap-[8.805px]"
+                >
+                  {services.map((service, index) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ scale: 1.05 }}
+                      className="border border-[#e5e7eb] flex flex-col gap-[11.571px]
+                                  items-center justify-center p-[5.785px] rounded-[11.571px]
+                                  cursor-pointer"
+                    >
+                      <div className="size-[100.544px]">
+                        <img
+                          src={service.ServiceImg}
+                          alt={service.CouponTitle}
+                          className="object-cover size-full"
+                        />
+                      </div>
 
-                    <p className="font-bold text-[#101828] text-[10.885px] text-center leading-[18.513px] whitespace-pre-wrap">
-                      {service.CouponTitle}
-                      <br />
-                      {service.subtitle}
-                    </p>
-                  </div>
-                ))}
-              </div>
+                      <p className="font-bold text-[#101828] text-[10.885px] text-center">
+                        {service.CouponTitle}
+                        <br />
+                        {service.subtitle}
+                      </p>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             )}
             {/* Normal Price */}
             {totalAmount !== discountAmount && (
