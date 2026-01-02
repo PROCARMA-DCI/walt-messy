@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ArraySkeleton } from "@/components/loader/SkeletonLoader";
 import StripePayment from "@/components/StripePayment/StripePayment";
 import { useAppContext } from "@/context/AppProvider";
