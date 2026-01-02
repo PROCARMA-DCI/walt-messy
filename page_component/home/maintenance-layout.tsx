@@ -3,6 +3,7 @@
 import { ArraySkeleton } from "@/components/loader/SkeletonLoader";
 import StripePayment from "@/components/StripePayment/StripePayment";
 import { useAppContext } from "@/context/AppProvider";
+import { currencyFormatter } from "@/utils/helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
@@ -195,7 +196,7 @@ const MaintenanceLayout = ({
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-[#4a5565]">Normal Price:</span>
                   <span className="text-xl xl:text-2xl text-gray-400 line-through decoration-red-500">
-                    ${totalAmount}.00
+                    {currencyFormatter(totalAmount)}
                   </span>
                 </div>
               )}
@@ -206,7 +207,7 @@ const MaintenanceLayout = ({
                     : "Normal Price:"}
                 </span>
                 <span className="text-xl xl:text-2xl font-bold text-[#101828]">
-                  ${discountAmount}.00
+                  {currencyFormatter(discountAmount)}
                 </span>
               </div>
             </div>
