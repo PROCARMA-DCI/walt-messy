@@ -1,8 +1,7 @@
 "use client";
 
 import { useAppContext } from "@/context/AppProvider";
-import { DesktopLayout } from "@/page_component/home/DesktopLayout";
-import { MobileLayout } from "@/page_component/home/MobileLayout";
+import MaintenanceLayout from "@/page_component/home/maintenance-layout";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -20,23 +19,23 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full md:flex md:items-center mx-auto md:justify-center bg-gray-100 md:overflow-hidden">
       {/* Desktop Layout (hidden on mobile) */}
-      {/* <MaintenanceLayout
+      <MaintenanceLayout
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+        products={products}
+      />
+      {/* <DesktopLayout
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
         products={products}
       /> */}
-      <DesktopLayout
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
-        products={products}
-      />
 
       {/* Mobile Layout (shown on mobile only) */}
-      <MobileLayout
+      {/* <MobileLayout
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
         products={products}
-      />
+      /> */}
     </div>
   );
 }
