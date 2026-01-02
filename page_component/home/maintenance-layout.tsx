@@ -5,6 +5,7 @@ import StripePayment from "@/components/StripePayment/StripePayment";
 import { useAppContext } from "@/context/AppProvider";
 import { currencyFormatter } from "@/utils/helpers";
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 const MaintenanceLayout = ({
@@ -20,6 +21,7 @@ const MaintenanceLayout = ({
   const [selectedProduct, setSelectedProduct] = useState<Record<string, any>>();
   const [services, setServices] = React.useState<any[]>([]);
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
+  const [thankYou, setThankYou] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
     const selectedProduct = products.find(
@@ -219,7 +221,68 @@ const MaintenanceLayout = ({
             selectedProduct={selectedProduct}
             openPaymentModal={openPaymentModal}
             setOpenPaymentModal={setOpenPaymentModal}
+            setThankYou={setThankYou}
           />
+        )}
+        {thankYou && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="bg-white relative rounded-2xl shadow-xl p-8 w-[90%] max-w-md text-center">
+              {/* Success Icon */}
+              <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-green-100">
+                <svg
+                  className="size-8 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+
+              {/* Title */}
+              <h2 className="text-2xl font-semibold text-gray-900">
+                Payment Successful 🎉
+              </h2>
+
+              {/* Message */}
+              <p className="mt-2 text-gray-600">
+                {thankYou?.message || "Thank you for your purchase!"}
+              </p>
+
+              {/* Order ID */}
+              <div className="mt-4 rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-800">
+                <span className="font-medium">Order ID:</span>{" "}
+                <span className="font-mono">{thankYou?.order_id}</span>
+              </div>
+
+              {/* Buttons */}
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={() => {
+                    setThankYou(null);
+                  }}
+                  className="flex-1 absolute top-4 right-4 rounded-lg   h-6 w-6 text-gray-700 hover:bg-gray-100"
+                >
+                  <X />
+                </button>
+
+                {/* <button
+                  onClick={() => {
+                    setThankYou(null);
+                    // optional: router.push("/")
+                  }}
+                  className="flex-1 rounded-lg bg-green-600 py-2 text-white hover:bg-green-700"
+                >
+                  Continue
+                </button> */}
+              </div>
+            </div>
+          </div>
         )}
       </div>
 

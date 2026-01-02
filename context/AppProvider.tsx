@@ -5,6 +5,7 @@ type AppContextType = {
   token: string | null;
   products: Record<string, any>[];
   loading: boolean;
+  fetchProducts: () => void;
 };
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -34,6 +35,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         token,
         products,
         loading,
+        fetchProducts,
       }}
     >
       {children}

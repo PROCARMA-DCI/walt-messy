@@ -6,11 +6,13 @@ interface StripePaymentProps {
   selectedProduct: Record<string, any>;
   openPaymentModal: boolean;
   setOpenPaymentModal: (value: boolean) => void;
+  setThankYou: (value: Record<string, any> | null) => void;
 }
 const StripePayment = ({
   selectedProduct,
   openPaymentModal,
   setOpenPaymentModal,
+  setThankYou,
 }: StripePaymentProps) => {
   const [clientSecret, setClientSecret] = useState("");
   const [invoiceNo, setInvoiceNo] = useState("");
@@ -20,23 +22,24 @@ const StripePayment = ({
 
   const handlePurchasePlan = async () => {
     const payload_metadata = {
+      clientSecret,
       product_id: selectedProduct.product_id,
       product_saving: selectedProduct.product_saving,
-      TransactionPercentage: selectedProduct.TransactionPercentage,
       no_of_installment: selectedProduct.payment_month,
       total_amount: selectedProduct.list_price,
-      monthly_payment: selectedProduct.monthly_price,
       PaymentThrough: 1, // CARD
-      payment_type: selectedProduct.payment_type,
+      monthly_payment: selectedProduct.monthly_price,
       invoice_no: invoiceNo,
-      clientSecret,
       TransactionID: transactionID,
+      TransactionPercentage: selectedProduct.TransactionPercentage,
+      payment_type: selectedProduct.payment_type,
     };
     const API_URL =
       process.env.NODE_ENV === "development"
         ? process.env.NEXT_PUBLIC_DEV_API_SERVER_HOST
         : process.env.NEXT_PUBLIC_PROD_API_SERVER_HOST;
     const response = await fetch(`${API_URL}/config`);
+
     const payload = {
       amount: Math.round(Number(selectedProduct.list_price) * 100), // cents
 
@@ -53,10 +56,11 @@ const StripePayment = ({
     });
 
     const key = await response.json();
+
     const data = await res.json();
     setClientSecret(data.clientSecret);
-    setInvoiceNo(data.invoice_no);
-    setTransactionID(data.TransactionID);
+    setInvoiceNo(data?.invoice_no);
+    setTransactionID(data?.TransactionID);
     setStripePromise(loadStripe(key.publishableKey));
   };
 
@@ -83,6 +87,7 @@ const StripePayment = ({
             invoiceNo={invoiceNo}
             transactionID={transactionID}
             stripePromise={stripePromise}
+            setThankYou={setThankYou}
           />
         )
       )}

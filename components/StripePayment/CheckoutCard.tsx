@@ -1,3 +1,5 @@
+import { fetchPostObj } from "@/action/function";
+import { useAppContext } from "@/context/AppProvider";
 import {
   CardCvcElement,
   CardExpiryElement,
@@ -18,6 +20,7 @@ type CheckoutCardProps = {
   transactionID: string;
   close: () => void;
   stripePromise: Promise<Stripe | null> | null;
+  setThankYou: (value: Record<string, any> | null) => void;
 };
 
 const CheckoutCard = ({
@@ -27,6 +30,7 @@ const CheckoutCard = ({
   transactionID,
   stripePromise,
   close,
+  setThankYou,
 }: CheckoutCardProps) => {
   const CheckoutForm = ({
     clientSecret,
@@ -35,9 +39,37 @@ const CheckoutCard = ({
     transactionID,
     onSuccess,
   }: any) => {
+    const { fetchProducts } = useAppContext();
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
+    console.log(selectedProduct);
+    const savePayment = async (paymentIntent: any) => {
+      const data = {
+        clientSecret,
+        product_id: selectedProduct.product_id,
+        product_saving: selectedProduct.product_saving,
+        no_of_installment: selectedProduct.payment_month,
+        total_amount: selectedProduct.list_price,
+        PaymentThrough: 1, // CARD
+        monthly_payment: selectedProduct.monthly_price,
+        invoice_no: paymentIntent.created,
+        TransactionID: paymentIntent.id,
+        // subscriptionId,
+        // stripe_customer_id,
+        // stripe_price_id
+      };
+      const res = await fetchPostObj({
+        url: "https://mypcp.us/mystripe/contractcreate/be8b362432bf91371acb831c343252de4bcd70d390759a9f14bc3ae6b1dc10220bc371772c1c1c9875476216acb553abca8315746b2724536e8029f692a1ad100KDBkemdTE4Of5sOjff7iJjsil28h2tM",
+        data,
+        showToast: true,
+      });
+      if (res) {
+        fetchProducts();
+        setThankYou(res);
+        console.log(res);
+      }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -61,8 +93,9 @@ const CheckoutCard = ({
         return;
       }
       if (paymentIntent.status === "succeeded") {
-        // await savePayment(paymentIntent);
-        toast.success("Payment Successful");
+        await savePayment(paymentIntent);
+        console.log("Payment successful", paymentIntent);
+        // toast.success("Payment Successful");
         onSuccess?.();
       }
 
