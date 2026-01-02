@@ -41,11 +41,11 @@ const MaintenanceLayout = ({
       style={{ fontFamily: "var(--font-inter)" }}
     >
       {/* Background gradient element - unified with responsive positioning */}
-      <div className="absolute xl:h-[1063.729px] h-[670px]  xl:left-[-233.34px] left-auto xl:top-[-423.87px] top-auto xl:w-[1860.536px] w-[2000px]">
-        <div className="absolute xl:inset-[-4.7%_-2.69%] inset-[-10.72%_-7.92%]">
+      <div className="absolute xl:h-[1063.729px] h-[670px]  xl:left-[-233.34px] left-auto xl:top-[-423.87px] top-auto xl:w-[1860.536px] w-[3000px]">
+        <div className="absolute xl:inset-[-4.7%_-2.69%] inset-[-20.72%_-7.92%]">
           <img
             alt=""
-            className="block max-w-none size-full"
+            className="block max-w-none size-full "
             src="/images/maintenance/subtract.svg"
           />
         </div>
