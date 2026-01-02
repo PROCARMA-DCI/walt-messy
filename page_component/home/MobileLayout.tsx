@@ -1,6 +1,7 @@
 import { ArraySkeleton } from "@/components/loader/SkeletonLoader";
 import StripePayment from "@/components/StripePayment/StripePayment";
 import { useAppContext } from "@/context/AppProvider";
+import { currencyFormatter } from "@/utils/helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 export const MobileLayout = ({
@@ -200,7 +201,7 @@ export const MobileLayout = ({
                   Normal Price:
                 </p>
                 <p className="font-normal text-[20.292px] text-[#aaafb6] leading-[15.219px] line-through decoration-red-500 decoration-2">
-                  ${totalAmount}.00
+                  {currencyFormatter(totalAmount)}
                 </p>
               </div>
             )}
@@ -212,7 +213,7 @@ export const MobileLayout = ({
                   : "Normal Price:"}
               </p>
               <p className="font-bold text-[20.292px] text-[#101828] leading-[15.219px]">
-                ${discountAmount}.00
+                {currencyFormatter(discountAmount)}
               </p>
             </div>
           </>

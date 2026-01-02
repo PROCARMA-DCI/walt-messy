@@ -2,6 +2,7 @@ import { ArraySkeleton } from "@/components/loader/SkeletonLoader";
 import StripePayment from "@/components/StripePayment/StripePayment";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppContext } from "@/context/AppProvider";
+import { currencyFormatter } from "@/utils/helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
@@ -196,7 +197,7 @@ export const DesktopLayout = ({
                   <Skeleton className="w-[100px] h-[20px]" />
                 ) : (
                   <p className="font-normal text-[28px] text-[#aaafb6] line-through decoration-red-500 decoration-2">
-                    ${totalAmount}.00
+                    {currencyFormatter(totalAmount)}
                   </p>
                 )}
               </div>
@@ -217,7 +218,7 @@ export const DesktopLayout = ({
                 <Skeleton className="w-[100px] h-[20px]" />
               ) : (
                 <p className="font-bold text-[28px] text-[#101828]">
-                  ${discountAmount}.00
+                  {currencyFormatter(discountAmount)}
                 </p>
               )}
             </div>
