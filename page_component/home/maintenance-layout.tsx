@@ -215,7 +215,7 @@ const MaintenanceLayout = ({
             </div>
           </>
         )}
-
+        {/* Purchase Plan */}
         {selectedProduct && (
           <StripePayment
             selectedProduct={selectedProduct}
