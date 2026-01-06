@@ -53,9 +53,7 @@ const StripePayment = ({
         ...payload_metadata,
       },
     };
-    console.log({ response });
     const key = await response.json();
-    console.log({ key });
     const res = await fetch(`${API_URL}/create-payment-intent`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

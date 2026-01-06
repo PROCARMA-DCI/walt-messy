@@ -43,7 +43,6 @@ const CheckoutCard = ({
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
-    console.log(selectedProduct);
     const savePayment = async (paymentIntent: any) => {
       const data = {
         clientSecret,
@@ -67,7 +66,6 @@ const CheckoutCard = ({
       if (res) {
         fetchProducts();
         setThankYou(res);
-        console.log(res);
       }
     };
 
