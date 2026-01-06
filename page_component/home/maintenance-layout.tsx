@@ -253,11 +253,20 @@ const MaintenanceLayout = ({
               <p className="mt-2 text-gray-600">
                 {thankYou?.message || "Thank you for your purchase!"}
               </p>
-
               {/* Order ID */}
               <div className="mt-4 rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-800">
                 <span className="font-medium">Order ID:</span>{" "}
                 <span className="font-mono">{thankYou?.order_id}</span>
+              </div>
+              {/* Contract ID */}
+              <div className="mt-4 rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-800">
+                <span className="font-medium">Contract #:</span>{" "}
+                <span className="font-mono">{thankYou?.ContractNo}</span>
+              </div>
+
+              <div className="mt-4 rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-800">
+                <span className="font-medium">Password</span>{" "}
+                <span className="font-mono">Last 6 Digit of Vin</span>
               </div>
 
               {/* Buttons */}
