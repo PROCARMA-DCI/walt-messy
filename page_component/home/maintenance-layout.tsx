@@ -37,6 +37,13 @@ const MaintenanceLayout = ({
     Number(selectedProduct?.product_saving ?? 0);
   const discountAmount = Number(selectedProduct?.list_price ?? 0);
 
+  const serviceImage: Record<string, string> = {
+    "OIL & FILTER CHANGES": "/images/services/OIL-CHANGE.png",
+    "TIRE ROTATION": "/images/services/TIRE-ROTATION.png",
+    "MULTI POINT INSPECTION": "/images/services/MULTIPOINT.png",
+    "BRAKE INSPECTION": "/images/services/BRAKE.png",
+    "BATTERY PERFORMANCE EVALUATION": "/images/services/BATTERY.png",
+  };
   return (
     <div
       className="relative min-h-screen lg:w-[1440px] w-full xl:h-[1319px]  bg-white overflow-hidden flex flex-col items-center xl:block"
@@ -94,7 +101,7 @@ const MaintenanceLayout = ({
       </div>
 
       {/* WM Logo - switches source based on screen size via CSS if possible, or hidden/visible */}
-      <div className="absolute top-[32.19px] xl:top-none xl:inset-[7.16%_59.73%_55.38%_5.93%] size-[170px] xl:size-[450.314px]">
+      <div className="absolute top-[32.19px]  xl:top-none xl:inset-[7.16%_59.73%_55.38%_5.93%] size-[170px] xl:size-[450.314px]">
         <img
           alt="WM Logo"
           className="block xl:hidden max-w-none size-full"
@@ -102,7 +109,7 @@ const MaintenanceLayout = ({
         />
         <img
           alt="WM Logo"
-          className="hidden xl:block max-w-none size-full"
+          className="hidden xl:block max-w-none size-full ml-5 "
           src="/images/maintenance/vector.svg"
         />
       </div>
@@ -177,7 +184,11 @@ const MaintenanceLayout = ({
                       className="border border-gray-200 flex flex-col items-center p-2 rounded-xl"
                     >
                       <img
-                        src={service.ServiceImg || "/placeholder.svg"}
+                        src={
+                          serviceImage[service.CouponTitle] ||
+                          service.ServiceImg ||
+                          "/placeholder.svg"
+                        }
                         alt={service.CouponTitle}
                         className="object-cover size-20 xl:size-24"
                       />
